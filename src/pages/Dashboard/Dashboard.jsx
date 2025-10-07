@@ -1,5 +1,21 @@
 // src/pages/Dashboard/Dashboard.jsx
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Paper,
+  Card,
+  CardContent,
+} from '@mui/material';
+import {
+  Dashboard as DashboardIcon,
+  Person,
+  Settings,
+  ExitToApp,
+} from '@mui/icons-material';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
 
@@ -14,34 +30,68 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
-            >
-              Logout
-            </button>
-          </div>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100', py: 4 }}>
+      <Container maxWidth="lg">
+        {/* Header */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
+          <Typography variant="h4" component="h1">
+            Dashboard
+          </Typography>
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<ExitToApp />}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box>
 
-          <div className="space-y-4">
-            <h2 className="text-xl">Welcome, {user?.full_name || 'User'}!</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded">
-                <p className="text-sm text-gray-600">Username</p>
-                <p className="font-medium">{user?.username}</p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded">
-                <p className="text-sm text-gray-600">Email</p>
-                <p className="font-medium">{user?.email}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        {/* Welcome Card */}
+        <Paper sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            Welcome, {user?.full_name || 'User'}!
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            You are logged in as <strong>{user?.username}</strong>
+          </Typography>
+        </Paper>
+
+        {/* Stats Cards */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Person sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
+                  <div>
+                    <Typography variant="h6">Username</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {user?.username}
+                    </Typography>
+                  </div>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Settings sx={{ fontSize: 40, color: 'secondary.main', mr: 2 }} />
+                  <div>
+                    <Typography variant="h6">Email</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {user?.email}
+                    </Typography>
+                  </div>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 }
