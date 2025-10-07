@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import DashboardLayout from './components/layout/DashboardLayout';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -10,7 +11,6 @@ import Profile from './pages/Profile/Profile';
 function App() {
   return (
     <BrowserRouter>
-      {/* Toast notifications */}
       <Toaster 
         position="top-right"
         toastOptions={{
@@ -27,11 +27,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected Routes */}
+        {/* Protected Routes with Dashboard Layout */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            {/* Add more routes here */}
+          </Route>
         </Route>
 
         {/* 404 */}

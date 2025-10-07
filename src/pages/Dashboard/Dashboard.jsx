@@ -1,97 +1,107 @@
 // src/pages/Dashboard/Dashboard.jsx
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Paper,
   Card,
   CardContent,
+  Typography,
+  Paper,
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
-  Person,
-  Settings,
-  ExitToApp,
+  TrendingUp,
+  People,
+  ShoppingCart,
+  AttachMoney,
 } from '@mui/icons-material';
 import { useAuthStore } from '../../stores/authStore';
-import toast from 'react-hot-toast';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
 
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    navigate('/login');
-  };
+  const stats = [
+    {
+      title: 'Total Users',
+      value: '1,234',
+      icon: <People sx={{ fontSize: 40 }} />,
+      color: 'primary.main',
+    },
+    {
+      title: 'Revenue',
+      value: '$45,678',
+      icon: <AttachMoney sx={{ fontSize: 40 }} />,
+      color: 'success.main',
+    },
+    {
+      title: 'Orders',
+      value: '567',
+      icon: <ShoppingCart sx={{ fontSize: 40 }} />,
+      color: 'warning.main',
+    },
+    {
+      title: 'Growth',
+      value: '+23%',
+      icon: <TrendingUp sx={{ fontSize: 40 }} />,
+      color: 'error.main',
+    },
+  ];
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100', py: 4 }}>
-      <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
-          <Typography variant="h4" component="h1">
-            Dashboard
-          </Typography>
-          <Button
-            variant="contained"
-            color="error"
-            startIcon={<ExitToApp />}
-            onClick={handleLogout}
+    <Box>
+      {/* Welcome Section */}
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          Welcome back, {user?.full_name}! 👋
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Here's what's happening with your business today.
+        </Typography>
+      </Paper>
+
+      {/* Stats Cards - Using Flexbox (No Grid warnings!) */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 3,
+        }}
+      >
+        {stats.map((stat, index) => (
+          <Box
+            key={index}
+            sx={{
+              flex: {
+                xs: '1 1 100%',      // Full width on mobile
+                sm: '1 1 calc(50% - 12px)',  // 2 columns on small screens
+                md: '1 1 calc(25% - 18px)',  // 4 columns on medium+ screens
+              },
+              minWidth: 0,
+            }}
           >
-            Logout
-          </Button>
-        </Box>
-
-        {/* Welcome Card */}
-        <Paper sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Welcome, {user?.full_name || 'User'}!
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            You are logged in as <strong>{user?.username}</strong>
-          </Typography>
-        </Paper>
-
-        {/* Stats Cards */}
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Card>
+            <Card sx={{ height: '100%' }}>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Person sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
-                  <div>
-                    <Typography variant="h6">Username</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {user?.username}
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'flex-start' 
+                  }}
+                >
+                  <Box>
+                    <Typography color="text.secondary" gutterBottom variant="body2">
+                      {stat.title}
                     </Typography>
-                  </div>
+                    <Typography variant="h4">
+                      {stat.value}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ color: stat.color }}>
+                    {stat.icon}
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Settings sx={{ fontSize: 40, color: 'secondary.main', mr: 2 }} />
-                  <div>
-                    <Typography variant="h6">Email</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {user?.email}
-                    </Typography>
-                  </div>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 }
