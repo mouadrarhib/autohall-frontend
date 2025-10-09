@@ -12,7 +12,8 @@ export const authService = {
       idUserSite: userData.idUserSite || null,
       actif: userData.actif ?? true,
     });
-    return response.data; // { token, user, roles, permissions }
+    // Backend sets cookie automatically, no need to handle token
+    return response.data;
   },
 
   // POST /api/auth/login
@@ -21,7 +22,8 @@ export const authService = {
       username: credentials.username,
       password: credentials.password,
     });
-    return response.data; // { token, user }
+    // Backend sets httpOnly cookie, we only get user data
+    return response.data;
   },
 
   // GET /api/auth/me
@@ -40,5 +42,14 @@ export const authService = {
   getCurrentUserPermissions: async () => {
     const response = await apiClient.get('/auth/me/permissions');
     return response.data;
+  },
+
+  // POST /api/auth/logout (you need to add this endpoint in backend)
+  logout: async () => {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   },
 };

@@ -62,24 +62,22 @@ export default function Login() {
     setIsLoading(true);
 
     try {
+      // Call login API - backend sets httpOnly cookie
       const response = await authService.login(formData);
+
+      // Store user data in Zustand (NO TOKEN - it's in httpOnly cookie)
       setAuth({
-        token: response.token,
         user: response.user,
         roles: response.roles || [],
         permissions: response.permissions || [],
       });
 
-      try {
-        const permissions = await authService.getCurrentUserPermissions();
-        useAuthStore.getState().setPermissions(permissions);
-      } catch (err) {
-        console.warn('Failed to fetch permissions:', err);
-      }
-
       toast.success('Login successful!');
+
+      // Redirect to where they came from, or dashboard
       const from = location.state?.from?.pathname || '/dashboard';
       navigate(from, { replace: true });
+
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error.message || 'Login failed');
@@ -106,7 +104,6 @@ export default function Login() {
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            {/* Username Field */}
             <TextField
               fullWidth
               label="Username"
@@ -121,7 +118,6 @@ export default function Login() {
               autoFocus
             />
 
-            {/* Password Field */}
             <TextField
               fullWidth
               label="Password"
@@ -136,14 +132,12 @@ export default function Login() {
               autoComplete="current-password"
             />
 
-            {/* Submit Error Alert */}
             {errors.submit && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {errors.submit}
               </Alert>
             )}
 
-            {/* Submit Button */}
             <Button
               type="submit"
               fullWidth
@@ -155,7 +149,6 @@ export default function Login() {
               {isLoading ? <CircularProgress size={24} /> : 'Login'}
             </Button>
 
-            {/* Register Link */}
             <Typography align="center" variant="body2">
               Don't have an account?{' '}
               <Link component={RouterLink} to="/register" underline="hover">

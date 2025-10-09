@@ -64,10 +64,22 @@ export default function DashboardLayout() {
     setUserMenuAnchor(null);
   };
 
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear cookie
+      await authService.logout();
+      
+      // Clear local state
+      logout();
+      
+      toast.success('Logged out successfully');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API fails, clear local state
+      logout();
+      navigate('/login');
+    }
   };
 
   const menuItems = [

@@ -4,28 +4,29 @@ import { persist } from 'zustand/middleware';
 
 export const useAuthStore = create(
   persist(
-    (set, get) => ({
-      // State
+    (set) => ({
+      // State - NO TOKEN (stored in httpOnly cookie)
       user: null,
-      token: null,
       roles: [],
       permissions: [],
       isAuthenticated: false,
 
       // Actions
       setAuth: (data) => {
-        // Store token in localStorage for axios interceptor
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-        
         set({
           user: data.user,
-          token: data.token,
           roles: data.roles || [],
           permissions: data.permissions || [],
           isAuthenticated: true,
         });
+      },
+
+      setUser: (user) => {
+        set({ user });
+      },
+
+      setRoles: (roles) => {
+        set({ roles });
       },
 
       setPermissions: (permissions) => {
@@ -33,10 +34,8 @@ export const useAuthStore = create(
       },
 
       logout: () => {
-        localStorage.removeItem('token');
         set({
           user: null,
-          token: null,
           roles: [],
           permissions: [],
           isAuthenticated: false,
@@ -45,18 +44,18 @@ export const useAuthStore = create(
 
       // Helper to check if user has a specific permission
       hasPermission: (permission) => {
-        const state = get();
+        const state = useAuthStore.getState();
         return state.permissions.includes(permission);
       },
     }),
     {
-      name: 'auth-storage', // Key in localStorage
+      name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
         roles: state.roles,
         permissions: state.permissions,
-        isAuthenticated: state.isAuthenticated,
+        isAuthenticated: state.isAuthenticated,kkk
+        // NO TOKEN in storage
       }),
     }
   )
